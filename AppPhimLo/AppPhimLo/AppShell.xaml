@@ -10,16 +10,19 @@
     <!-- Trang Movie_Detail đặt đầu tiên -->
 
     <ShellContent
+        ContentTemplate="{DataTemplate view:LoginPage}"
+        Route="LoginPage" />
+
         Title="Tìm kiếm"
         ContentTemplate="{DataTemplate view:SearchPage}"
         Route="SearchPage" />
-    
+
     <ShellContent
         Title="Chi tiết phim"
         ContentTemplate="{DataTemplate view:Movie_Detail}"
         Route="Movie_Detail" />
 
-    
-    
+
+
 
 </Shell>
