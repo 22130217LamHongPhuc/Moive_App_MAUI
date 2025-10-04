@@ -9,8 +9,8 @@
 
 
     <ShellContent
-        Title="Tìm kiếm"
-        ContentTemplate="{DataTemplate view:SearchPage}"
-        Route="SearchPage" />
+        ContentTemplate="{DataTemplate view:LoginPage}"
+        Route="LoginPage" />
+    
 
 </Shell>
