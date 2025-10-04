@@ -13,6 +13,10 @@
         ContentTemplate="{DataTemplate view:LoginPage}"
         Route="LoginPage" />
 
+    <ShellContent
+     ContentTemplate="{DataTemplate view:ProfileResponse}"
+     Route="LoginPage" />
+    <ShellContent
         Title="Tìm kiếm"
         ContentTemplate="{DataTemplate view:SearchPage}"
         Route="SearchPage" />
@@ -21,6 +25,8 @@
         Title="Chi tiết phim"
         ContentTemplate="{DataTemplate view:Movie_Detail}"
         Route="Movie_Detail" />
+    
+    
 
 
 

@@ -16,7 +16,7 @@
             <Label Text="Chúc bạn xem vui vẻ!" FontSize="13" TextColor="#6B7280"/>
         </VerticalStackLayout>
 
-        <!-- 2) Player: WebView dùng link_embed -->
+        <!-- 2) Player -->
         <Grid Grid.Row="1" HeightRequest="320">
             <WebView Source="{Binding WebPlayerUrl}" IsVisible="{Binding HasEmbed}" />
             <ActivityIndicator IsRunning="{Binding IsLoading}"
@@ -27,38 +27,37 @@
                    VerticalOptions="Center" HorizontalOptions="Center" />
         </Grid>
 
-        <!-- Hàng hành động -->
+        <!-- 3) Hàng hành động -->
         <Grid Grid.Row="2" ColumnDefinitions="Auto,Auto,*" ColumnSpacing="16" Padding="0,8">
-            <!-- Tym -->
             <HorizontalStackLayout>
                 <Button 
-            Text="{Binding LikeButtonText}"
-            TextColor="White"
-            BackgroundColor="{Binding LikeButtonColor}"
-            Padding="14,8"
-            CornerRadius="16"
-            Command="{Binding ToggleLikeCommand}" />
-
+                    Text="{Binding LikeButtonText}"
+                    TextColor="White"
+                    BackgroundColor="{Binding LikeButtonColor}"
+                    Padding="14,8"
+                    CornerRadius="16"
+                    Command="{Binding ToggleLikeCommand}" />
                 <Label Text="{Binding LikesCount}"
-               Margin="8,0,0,0"
-               VerticalTextAlignment="Center"
-               FontAttributes="Bold"
-               TextColor="Black" />
+                       Margin="8,0,0,0"
+                       VerticalTextAlignment="Center"
+                       FontAttributes="Bold"
+                       TextColor="Black" />
             </HorizontalStackLayout>
 
-            <!-- Share -->
             <Button Grid.Column="1"
-            Text="Chia sẻ"
-            Padding="14,8"
-            Command="{Binding ShareCommand}" />
+                    Text="Chia sẻ"
+                    Padding="14,8"
+                    Command="{Binding ShareCommand}" />
         </Grid>
 
+        <!-- 4) Bình luận: dùng Grid con để CollectionView ở hàng * -->
+        <Grid Grid.Row="3" RowDefinitions="Auto,Auto,*" RowSpacing="10">
 
-        <!-- 4) Bình luận -->
-        <VerticalStackLayout Grid.Row="3" Spacing="10">
-            <Label Text="Bình luận" FontAttributes="Bold" FontSize="18"/>
+            <!-- Tiêu đề -->
+            <Label Grid.Row="0" Text="Bình luận" FontAttributes="Bold" FontSize="18"/>
 
-            <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
+            <!-- Ô nhập + nút Gửi -->
+            <Grid Grid.Row="1" ColumnDefinitions="*,Auto" ColumnSpacing="8">
                 <Frame Grid.Column="0" CornerRadius="10" Padding="8" HasShadow="False" BorderColor="#E5E7EB">
                     <Entry Placeholder="Viết bình luận..."
                            Text="{Binding NewCommentText}"
@@ -70,7 +69,11 @@
                         CornerRadius="8"/>
             </Grid>
 
-            <CollectionView ItemsSource="{Binding Comments}" SelectionMode="None">
+            <!-- Danh sách comment (cuộn) -->
+            <CollectionView Grid.Row="2"
+                            ItemsSource="{Binding Comments}"
+                            SelectionMode="None"
+                            VerticalOptions="FillAndExpand">
                 <CollectionView.EmptyView>
                     <Label Text="Hãy là người bình luận đầu tiên!"
                            FontSize="13" TextColor="#6B7280" />
@@ -87,7 +90,8 @@
                     </DataTemplate>
                 </CollectionView.ItemTemplate>
             </CollectionView>
-        </VerticalStackLayout>
+
+        </Grid>
 
     </Grid>
 </ContentPage>

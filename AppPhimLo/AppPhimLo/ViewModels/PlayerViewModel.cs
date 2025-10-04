@@ -44,7 +44,7 @@ namespace AppPhimLo.ViewModels
         }
 
         public string? MovieSlug { get; private set; }
-        int CurrentUserId = 1;
+        int CurrentUserId = Preferences.Get("UserId", 0);
         private string? webPlayerUrl; // link_embed
         public string? WebPlayerUrl
         {
@@ -134,16 +134,16 @@ namespace AppPhimLo.ViewModels
 
                     var req = new CreateCommentRequest
                     {
-                        userId = 1,
+                        userId = Preferences.Get("UserId", 0),
                         slug = MovieSlug,
-                        displayName = "Phúc",
+                        displayName = Preferences.Get("UserName", string.Empty),
                         content = NewCommentText?.Trim(),
                         timeAgo = "vừa xong"
                     };
                     await _service.PostCommentAsync(req);
                     Comments.Insert(0, new CommentItem
                     {
-                        DisplayName = "Phúc",
+                        DisplayName = Preferences.Get("UserName", string.Empty),
                         Content = NewCommentText?.Trim(),
                         TimeAgo = "vừa xong"
                     });

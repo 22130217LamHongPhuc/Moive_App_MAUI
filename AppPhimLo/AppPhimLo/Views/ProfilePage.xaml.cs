@@ -1,4 +1,5 @@
-﻿using System.Net.Http.Json;
+﻿using Microsoft.Maui.ApplicationModel.Communication;
+using System.Net.Http.Json;
 using System.Xml;
 
 namespace AppPhimLo.Views;
@@ -28,6 +29,14 @@ public partial class ProfilePage : ContentPage
                 EmailLabel.Text = profile.Email;
                 PhoneLabel.Text = profile.PhoneNumber;
                 AddressLabel.Text = profile.Address;
+
+                // Lưu sau khi load profile:
+                Preferences.Set("UserId", profile.UserId );
+                Preferences.Set("UserName", profile.Name);
+                Preferences.Set("UserEmail", profile.Email);
+                Preferences.Set("UserPhone", profile.PhoneNumber);
+                Preferences.Set("UserAddress", profile.Address);
+
             }
         }
         catch (Exception ex)
@@ -35,11 +44,17 @@ public partial class ProfilePage : ContentPage
             await DisplayAlert("Lỗi", "Không thể load thông tin: " + ex.Message, "OK");
         }
     }
+
+    private async void OnProfileButtonClicked(object sender, EventArgs e)
+    {
+        await Shell.Current.GoToAsync($"{nameof(SearchPage)}");
+    }
 }
 
 // Class để deserialize JSON từ backend
 public class ProfileResponse
 {
+    public int UserId { get; set; }
     public string Name { get; set; }
     public string Email { get; set; }
     public string PhoneNumber { get; set; }

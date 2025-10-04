@@ -73,6 +73,12 @@
                                TextColor="#424242"/>
                     </HorizontalStackLayout>
 
+                    <VerticalStackLayout Padding="20">
+                        <Button Text="Xem Phim"
+                        Clicked="OnProfileButtonClicked" />
+                    </VerticalStackLayout>
+
+
                 </VerticalStackLayout>
             </Frame>
         </VerticalStackLayout>
