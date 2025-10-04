@@ -25,14 +25,5 @@ namespace AppPhimLo.Models
         public string CategoryNames => Category != null ? string.Join(", ", Category.Select(c => c.Name)) : "";
     }
 
-    public class Country
-    {
-        public string Name { get; set; }
-    }
-
-    public class Category
-    {
-        public string Name { get; set; }
-    }
-}
+  }
 

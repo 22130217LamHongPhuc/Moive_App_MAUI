@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
+
+    <!-- Dùng lại style từ Components.xaml (đã merge qua App.xaml) -->
+    <DataTemplate x:Key="TextChipTemplate">
+        <Border Style="{StaticResource ChipBorder}">
+            <Label Text="{Binding .}" FontSize="13" TextColor="#111827"/>
+        </Border>
+    </DataTemplate>
+
+    <DataTemplate x:Key="NameChipTemplate">
+        <Border Style="{StaticResource ChipBorder}">
+            <Label Text="{Binding Name}" FontSize="13" TextColor="#111827"/>
+        </Border>
+    </DataTemplate>
+</ResourceDictionary>

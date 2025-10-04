@@ -3,14 +3,23 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:local="clr-namespace:AppPhimLo"
-    xmlns:view="clr-namespace:AppPhimLo.Views"  
+    xmlns:view="clr-namespace:AppPhimLo.Views"
     Shell.FlyoutBehavior="Disabled"
     Title="AppPhimLo">
 
+    <!-- Trang Movie_Detail đặt đầu tiên -->
 
     <ShellContent
         Title="Tìm kiếm"
         ContentTemplate="{DataTemplate view:SearchPage}"
         Route="SearchPage" />
+    
+    <ShellContent
+        Title="Chi tiết phim"
+        ContentTemplate="{DataTemplate view:Movie_Detail}"
+        Route="Movie_Detail" />
+
+    
+    
 
 </Shell>

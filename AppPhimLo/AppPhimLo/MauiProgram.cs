@@ -1,4 +1,6 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using AppPhimLo.Services;
+using AppPhimLo.Views;
+using Microsoft.Extensions.Logging;
 
 namespace AppPhimLo
 {
@@ -17,8 +19,9 @@ namespace AppPhimLo
 
 #if DEBUG
     		builder.Logging.AddDebug();
-#endif
 
+
+#endif
             return builder.Build();
         }
     }

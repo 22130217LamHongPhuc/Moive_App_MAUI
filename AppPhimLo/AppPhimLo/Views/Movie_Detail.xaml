@@ -1,0 +1,141 @@
+<!-- Movie_Detail.xaml -->
+<ContentPage
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:vm="clr-namespace:AppPhimLo.ViewModels"
+    xmlns:models="clr-namespace:AppPhimLo.Models"
+    x:Class="AppPhimLo.Views.Movie_Detail"
+    x:Name="Page"
+    x:DataType="vm:MovieViewModel">
+
+    <ContentPage.Resources>
+        <!-- Style hiển thị lỗi: mặc định ẩn, chỉ hiện khi ErrorMessage != "" -->
+        <Style x:Key="ErrorLabelStyle" TargetType="Label">
+            <Setter Property="TextColor" Value="Red"/>
+            <Setter Property="IsVisible" Value="True"/>
+
+        </Style>
+    </ContentPage.Resources>
+
+    <ScrollView>
+        
+        <VerticalStackLayout Padding="16" Spacing="12">
+            <Label x:Name="lb"/>
+         
+            <!-- Trạng thái tải -->
+            <ActivityIndicator IsRunning="{Binding IsLoading}"
+                               IsVisible="{Binding IsLoading}" />
+
+            <!-- Hiển thị lỗi (nếu có) -->
+            <Label Text="{Binding ErrorMessage}" Style="{StaticResource ErrorLabelStyle}" />
+
+            <VerticalStackLayout IsVisible="{Binding HasData}" Spacing="14">
+
+                <!-- Poster lớn + overlay mờ + tiêu đề -->
+                <Grid>
+                    <Frame HasShadow="False" Padding="0" CornerRadius="16" Margin="0,4,0,0">
+                        <Grid>
+                            <Image Source="{Binding Movie.PosterUrl}"
+                       Aspect="AspectFill" HeightRequest="280"/>
+                            <!-- overlay -->
+                            <BoxView BackgroundColor="#66000000" />
+                            <!-- tiêu đề trên poster -->
+                            <VerticalStackLayout Padding="16" VerticalOptions="End" Spacing="6">
+                                <Label Text="{Binding Movie.Name}" 
+                           FontAttributes="Bold" FontSize="22" TextColor="White"/>
+                                <Label Text="{Binding Movie.OriginName}" 
+                           FontSize="13" TextColor="#F3F4F6"/>
+                            </VerticalStackLayout>
+                        </Grid>
+                    </Frame>
+                </Grid>
+
+                <!-- Badge thông tin nhanh -->
+                <FlexLayout Direction="Row" Wrap="Wrap" AlignItems="Center" JustifyContent="Start">
+                    <Label Style="{StaticResource BadgeLabel}" Text="{Binding Movie.Year, StringFormat='Năm: {0}'}"/>
+                    <Label Style="{StaticResource BadgeLabel}" Text="{Binding Movie.Quality, StringFormat='Chất lượng: {0}'}"/>
+                    <Label Style="{StaticResource BadgeLabel}" Text="{Binding Movie.Language, StringFormat='Ngôn ngữ: {0}'}"/>
+                    <Label Style="{StaticResource BadgeLabel}" Text="{Binding Movie.Duration, StringFormat='Thời lượng: {0}'}"/>
+                    <Label Style="{StaticResource BadgeLabel}" Text="{Binding Movie.EpisodeCurrent, StringFormat='Tập hiện tại: {0}'}"/>
+                    <Label Style="{StaticResource BadgeLabel}" Text="{Binding Movie.EpisodeTotal, StringFormat='Tổng tập: {0}'}"/>
+                </FlexLayout>
+
+                <!-- Nút Trailer (nếu có) -->
+                <Button Text="Xem Trailer"
+            IsVisible="{Binding Movie.TrailerUrl}"
+            Command="{Binding OpenTrailerCommand}"
+            CommandParameter="{Binding Movie.TrailerUrl}"
+            CornerRadius="10"
+            HeightRequest="44"
+            BackgroundColor="#2563EB"
+            TextColor="White"/>
+
+                <!-- Mô tả -->
+                <Label Style="{StaticResource SectionTitle}" Text="Tóm tắt nội dung"/>
+                <Label Text="{Binding Movie.Content}"
+           FontSize="14" TextColor="#374151"
+           LineBreakMode="TailTruncation"
+           MaxLines="6"/>
+
+                <!-- Danh mục -->
+                <Label Style="{StaticResource SectionTitle}" Text="Thể loại"/>
+                <FlexLayout BindableLayout.ItemsSource="{Binding Movie.Categories}"
+                Direction="Row" Wrap="Wrap" AlignItems="Center" JustifyContent="Start"
+                BindableLayout.ItemTemplate="{StaticResource NameChipTemplate}"/>
+
+                <!-- Quốc gia -->
+                <Label Style="{StaticResource SectionTitle}" Text="Quốc gia"/>
+                <FlexLayout BindableLayout.ItemsSource="{Binding Movie.Countries}"
+                Direction="Row" Wrap="Wrap" AlignItems="Center" JustifyContent="Start"
+                BindableLayout.ItemTemplate="{StaticResource NameChipTemplate}"/>
+
+                <Label Style="{StaticResource SectionTitle}" Text="Diễn viên"/>
+                <FlexLayout BindableLayout.ItemsSource="{Binding Movie.Actors}"
+           Direction="Row" Wrap="Wrap" AlignItems="Center" JustifyContent="Start"
+           BindableLayout.ItemTemplate="{StaticResource TextChipTemplate}"/>
+
+                <!-- Đạo diễn -->
+                <Label Style="{StaticResource SectionTitle}" Text="Đạo diễn"/>
+                <FlexLayout BindableLayout.ItemsSource="{Binding Movie.Directors}"
+           Direction="Row" Wrap="Wrap" AlignItems="Center" JustifyContent="Start"
+           BindableLayout.ItemTemplate="{StaticResource TextChipTemplate}"/>
+
+                <!-- EPISODES (tận dụng cấu trúc bạn đã có) -->
+                <Label Style="{StaticResource SectionTitle}" Text="Danh sách tập"/>
+                <CollectionView ItemsSource="{Binding Episodes}">
+                    <CollectionView.ItemTemplate>
+                        <!-- mỗi item: EpisodeServer -->
+                        <DataTemplate x:DataType="models:EpisodeServer">
+                            <Frame Padding="12" Margin="0,6" CornerRadius="14" HasShadow="True">
+                                <VerticalStackLayout Spacing="8">
+                                    <Label Text="{Binding ServerName}" FontAttributes="Bold" FontSize="16" />
+                                    <FlexLayout BindableLayout.ItemsSource="{Binding ServerData}"
+                                    Direction="Row" Wrap="Wrap" AlignItems="Center" JustifyContent="Start">
+                                        <BindableLayout.ItemTemplate>
+                                            <!-- mỗi item: EpisodeData -->
+                                            <DataTemplate x:DataType="models:EpisodeData">
+                                                <Border Style="{StaticResource ChipBorder}"
+                                                        BackgroundColor="Transparent"  
+                                                    StrokeThickness="1">
+                                                    <Border.GestureRecognizers>
+                                                        <TapGestureRecognizer
+                Command="{Binding Source={x:Reference Page}, Path=BindingContext.OpenEpisodeCommand}"
+                CommandParameter="{Binding .}" />
+                                                    </Border.GestureRecognizers>
+                                                    <Label Text="{Binding Name}" FontSize="13" />
+                                                </Border>
+                                            </DataTemplate>
+
+                                        </BindableLayout.ItemTemplate>
+                                    </FlexLayout>
+                                </VerticalStackLayout>
+                            </Frame>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+
+            </VerticalStackLayout>
+
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

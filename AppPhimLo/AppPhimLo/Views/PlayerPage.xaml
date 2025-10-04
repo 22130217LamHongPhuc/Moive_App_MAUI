@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:vm="clr-namespace:AppPhimLo.ViewModels"
+    x:Class="AppPhimLo.Views.PlayerPage"
+    x:DataType="vm:PlayerViewModel"
+    x:Name="Page"
+    Title="Xem phim">
+
+    <Grid RowDefinitions="Auto,Auto,Auto,*" Padding="12">
+
+        <!-- 1) Tiêu đề -->
+        <VerticalStackLayout Spacing="4">
+            <Label Text="{Binding EpisodeTitle}" FontSize="20" FontAttributes="Bold"/>
+            <Label Text="Chúc bạn xem vui vẻ!" FontSize="13" TextColor="#6B7280"/>
+        </VerticalStackLayout>
+
+        <!-- 2) Player: WebView dùng link_embed -->
+        <Grid Grid.Row="1" HeightRequest="320">
+            <WebView Source="{Binding WebPlayerUrl}" IsVisible="{Binding HasEmbed}" />
+            <ActivityIndicator IsRunning="{Binding IsLoading}"
+                               IsVisible="{Binding IsLoading}"
+                               VerticalOptions="Center" HorizontalOptions="Center" />
+            <Label Text="{Binding ErrorMessage}" TextColor="Red"
+                   IsVisible="{Binding HasError}"
+                   VerticalOptions="Center" HorizontalOptions="Center" />
+        </Grid>
+
+        <!-- Hàng hành động -->
+        <Grid Grid.Row="2" ColumnDefinitions="Auto,Auto,*" ColumnSpacing="16" Padding="0,8">
+            <!-- Tym -->
+            <HorizontalStackLayout>
+                <Button 
+            Text="{Binding LikeButtonText}"
+            TextColor="White"
+            BackgroundColor="{Binding LikeButtonColor}"
+            Padding="14,8"
+            CornerRadius="16"
+            Command="{Binding ToggleLikeCommand}" />
+
+                <Label Text="{Binding LikesCount}"
+               Margin="8,0,0,0"
+               VerticalTextAlignment="Center"
+               FontAttributes="Bold"
+               TextColor="Black" />
+            </HorizontalStackLayout>
+
+            <!-- Share -->
+            <Button Grid.Column="1"
+            Text="Chia sẻ"
+            Padding="14,8"
+            Command="{Binding ShareCommand}" />
+        </Grid>
+
+
+        <!-- 4) Bình luận -->
+        <VerticalStackLayout Grid.Row="3" Spacing="10">
+            <Label Text="Bình luận" FontAttributes="Bold" FontSize="18"/>
+
+            <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
+                <Frame Grid.Column="0" CornerRadius="10" Padding="8" HasShadow="False" BorderColor="#E5E7EB">
+                    <Entry Placeholder="Viết bình luận..."
+                           Text="{Binding NewCommentText}"
+                           MaxLength="300" />
+                </Frame>
+                <Button Grid.Column="1" Text="Gửi"
+                        Command="{Binding PostCommentCommand}"
+                        IsEnabled="{Binding CanPost}"
+                        CornerRadius="8"/>
+            </Grid>
+
+            <CollectionView ItemsSource="{Binding Comments}" SelectionMode="None">
+                <CollectionView.EmptyView>
+                    <Label Text="Hãy là người bình luận đầu tiên!"
+                           FontSize="13" TextColor="#6B7280" />
+                </CollectionView.EmptyView>
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="vm:CommentItem">
+                        <VerticalStackLayout Padding="4,8" Spacing="2">
+                            <HorizontalStackLayout Spacing="8">
+                                <Label Text="{Binding DisplayName}" FontAttributes="Bold"/>
+                                <Label Text="{Binding TimeAgo}" FontSize="13" TextColor="#6B7280"/>
+                            </HorizontalStackLayout>
+                            <Label Text="{Binding Content}" />
+                        </VerticalStackLayout>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </VerticalStackLayout>
+
+    </Grid>
+</ContentPage>
