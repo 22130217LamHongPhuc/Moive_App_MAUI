@@ -58,10 +58,7 @@ public class SearchViewModel : BindableObject
             {
                 _isBusy = value;
                 OnPropertyChanged();
-                // RẤT QUAN TRỌNG: Gọi ChangeCanExecute() để cập nhật trạng thái các nút
-                // (Command) ép kiểu cần thiết vì ShowGenresCommand là ICommand
                 ((Command)ShowGenresCommand).ChangeCanExecute();
-                // ... và các Command khác nếu có
             }
         }
     }
@@ -74,18 +71,57 @@ public class SearchViewModel : BindableObject
         get => selectedGenre;
         set
         {
-            // Sử dụng SetProperty nếu bạn dùng Maui Community Toolkit hoặc tự implement
-            // Nếu không, bạn có thể dùng cách truyền thống:
             if (selectedGenre != value)
             {
                 selectedGenre = value;
                 OnPropertyChanged();
                 if (value != null)
                 {
-                    // Khi SelectedGenre thay đổi, thực hiện tìm kiếm theo thể loại
-                    //_ = PerformSearchAsync();
+                    _ = PerformGenreSearchAsync(value.Slug, 1);
                 }
             }
+        }
+    }
+
+    // Thêm vào trong SearchViewModel của bạn
+
+    // Phương thức để tìm kiếm phim dựa trên slug của thể loại
+    private async Task PerformGenreSearchAsync(string genreSlug, int page)
+    {
+        if (isLoading)
+            return;
+
+        isLoading = true; // Bắt đầu trạng thái tải
+        CurrentPage = page; // Cập nhật trang hiện tại
+
+        Movies.Clear(); // Xóa danh sách phim cũ
+
+        try
+        {
+            // Gọi API để lấy phim theo thể loại đã chọn
+            var (results, totalItems, totalPages) = await _genreService.GetMoviesByGenreAsync(
+                genreSlug,
+                CurrentPage,
+                limit: PageSize // Sử dụng PageSize đã định nghĩa
+            );
+
+            foreach (var movie in results)
+                Movies.Add(movie); // Thêm phim vào ObservableCollection
+
+            TotalPages = totalPages; // Cập nhật tổng số trang
+
+            OnPropertyChanged(nameof(Movies));
+            OnPropertyChanged(nameof(HasMovies));
+            UpdatePaginationProperties(); 
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine($"Error searching movies by genre: {ex.Message}");
+            await Application.Current.MainPage.DisplayAlert("Lỗi", "Không thể tải phim theo thể loại này. Vui lòng thử lại sau.", "OK");
+        }
+        finally
+        {
+            isLoading = false; 
         }
     }
 
@@ -122,16 +158,15 @@ public class SearchViewModel : BindableObject
 
     }
 
+    // Sửa đổi phương thức OnGenreSelected hiện có trong SearchViewModel
+
     private async Task OnGenreSelected(Genre selectedGenre)
     {
         if (selectedGenre == null) return;
 
-        // Gán thể loại đã chọn vào SelectedGenre của ViewModel
-        // Setter của SelectedGenre sẽ tự động gọi PerformSearchAsync
-        SelectedGenre = selectedGenre;
+        SelectedGenre = selectedGenre; // Lưu thể loại đã chọn
 
-        // Tùy chọn: Đặt lại SearchQuery nếu bạn muốn ưu tiên tìm kiếm theo thể loại
-        SearchQuery = string.Empty;
+        await PerformGenreSearchAsync(selectedGenre.Slug, 1);
     }
 
 
@@ -143,10 +178,10 @@ public class SearchViewModel : BindableObject
         try
         {
             var genreList = await _genreService.GetGenresAsync();
-            Genres.Clear(); // Xóa trước khi thêm mới
+            Genres.Clear(); 
             foreach (var genre in genreList)
             {
-                Genres.Add(genre);
+                    Genres.Add(genre);
             }
         }
         catch (Exception ex)
@@ -156,7 +191,7 @@ public class SearchViewModel : BindableObject
         }
         finally
         {
-            IsBusy = false; // IsBusy sẽ tự động gọi UpdateAllCommandsCanExecute
+            IsBusy = false; 
         }
     }
 
@@ -174,30 +209,21 @@ public class SearchViewModel : BindableObject
             }
         }
 
-        // --- ĐÂY LÀ PHẦN CẦN SỬA ---
         string title = "Chọn Thể loại";
         string cancelButton = "Hủy";
-        // string destructionButton = null; // Không cần nút phá hủy trong trường hợp này
 
-        // Chuyển đổi danh sách Genres thành một mảng string cho các nút lựa chọn
         string[] genreButtons = Genres.Select(g => g.Name).ToArray();
 
-        // Hiển thị Action Sheet và đợi người dùng chọn
-        // DisplayActionSheet trả về chuỗi tên của nút đã chọn
         string selectedGenreName = await Application.Current.MainPage.DisplayActionSheet(
             title,
             cancelButton,
-            null, // Không có nút phá hủy
+            null, 
             genreButtons);
 
-        // Xử lý lựa chọn của người dùng
         if (selectedGenreName != null && selectedGenreName != cancelButton)
         {
-            // Tìm thể loại tương ứng từ danh sách Genres dựa trên tên đã chọn
             SelectedGenre = Genres.FirstOrDefault(g => g.Name == selectedGenreName);
-            // Setter của SelectedGenre sẽ tự động gọi PerformSearchAsync
         }
-        // --- KẾT THÚC PHẦN SỬA ---
     }
 
     private async Task SearchMoviesAsync(int page)
@@ -229,6 +255,4 @@ public class SearchViewModel : BindableObject
         OnPropertyChanged(nameof(CanGoPrevious));
         OnPropertyChanged(nameof(CanGoNext));
     }
-
-
 }
