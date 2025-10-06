@@ -74,7 +74,7 @@ namespace AppPhimLo
                     MoviesTQ.Add(movie);
                 
             }
-            Device.StartTimer(TimeSpan.FromSeconds(3), () =>
+            Device.StartTimer(TimeSpan.FromSeconds(8), () =>
             {
                 if (MoviesTQ.Count == 0)
                     return true; 

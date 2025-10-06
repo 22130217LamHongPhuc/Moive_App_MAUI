@@ -3,7 +3,7 @@
              x:Class="AppPhimLo.Views.ProfilePage">
 
     <ScrollView>
-        <VerticalStackLayout Spacing="20" Padding="20">
+        <VerticalStackLayout Spacing="20" Padding="20" BackgroundColor="#191b24">
 
             <!-- Avatar -->
             <Frame CornerRadius="80"

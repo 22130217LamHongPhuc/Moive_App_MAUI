@@ -3,10 +3,6 @@
   "WorkspaceRootPath": "D:\\mauiappphim\\Moive_App_MAUI\\AppPhimLo\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{346B471C-87F3-4D3A-A8E2-446FD6235C2A}|AppPhimLo\\AppPhimLo.csproj|d:\\mauiappphim\\moive_app_maui\\appphimlo\\appphimlo\\mainpage.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{346B471C-87F3-4D3A-A8E2-446FD6235C2A}|AppPhimLo\\AppPhimLo.csproj|solutionrelative:appphimlo\\mainpage.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{346B471C-87F3-4D3A-A8E2-446FD6235C2A}|AppPhimLo\\AppPhimLo.csproj|d:\\mauiappphim\\moive_app_maui\\appphimlo\\appphimlo\\mainpage.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
       "RelativeMoniker": "D:0:0:{346B471C-87F3-4D3A-A8E2-446FD6235C2A}|AppPhimLo\\AppPhimLo.csproj|solutionrelative:appphimlo\\mainpage.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
     }
@@ -23,27 +19,14 @@
             {
               "$type": "Document",
               "DocumentIndex": 0,
-              "Title": "MainPage.xaml.cs",
-              "DocumentMoniker": "D:\\mauiappphim\\Moive_App_MAUI\\AppPhimLo\\AppPhimLo\\MainPage.xaml.cs",
-              "RelativeDocumentMoniker": "AppPhimLo\\MainPage.xaml.cs",
-              "ToolTip": "D:\\mauiappphim\\Moive_App_MAUI\\AppPhimLo\\AppPhimLo\\MainPage.xaml.cs",
-              "RelativeToolTip": "AppPhimLo\\MainPage.xaml.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAHsAAAAvAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-10-05T10:49:37.306Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 1,
               "Title": "MainPage.xaml",
               "DocumentMoniker": "D:\\mauiappphim\\Moive_App_MAUI\\AppPhimLo\\AppPhimLo\\MainPage.xaml",
               "RelativeDocumentMoniker": "AppPhimLo\\MainPage.xaml",
               "ToolTip": "D:\\mauiappphim\\Moive_App_MAUI\\AppPhimLo\\AppPhimLo\\MainPage.xaml",
               "RelativeToolTip": "AppPhimLo\\MainPage.xaml",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABEAAABNAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAcAAABUAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
-              "WhenOpened": "2025-10-05T05:59:09.006Z",
+              "WhenOpened": "2025-10-06T03:08:36.605Z",
               "EditorCaption": ""
             }
           ]

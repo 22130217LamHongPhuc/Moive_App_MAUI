@@ -18,8 +18,8 @@
     </ContentPage.Resources>
 
     <ScrollView>
-        
-        <VerticalStackLayout Padding="16" Spacing="12">
+
+        <VerticalStackLayout Padding="16" Spacing="12" BackgroundColor="#191b24">
             <Label x:Name="lb"/>
          
             <!-- Trạng thái tải -->
