@@ -5,6 +5,7 @@ public partial class SearchPage : ContentPage
     public SearchPage()
     {
         InitializeComponent();
+        NavigationPage.SetHasNavigationBar(this, false);
     }
 
     private async void Move(object sender, TappedEventArgs e)
