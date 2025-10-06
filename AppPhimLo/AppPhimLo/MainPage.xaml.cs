@@ -74,21 +74,27 @@ namespace AppPhimLo
                     MoviesTQ.Add(movie);
                 
             }
-            Device.StartTimer(TimeSpan.FromSeconds(8), () =>
-            {
-                if (MoviesTQ.Count == 0)
-                    return true; 
+            await Task.Delay(300);
 
-                
-                _carouselIndex++;
-                if (_carouselIndex >= MoviesTQ.Count)
-                    _carouselIndex = 0;
+            _carouselIndex = 0;
+            carousel.ScrollTo(_carouselIndex, animate: false);
 
-               
-                carousel.ScrollTo(_carouselIndex, animate: false);
+            IsLoading = false;
+            //Device.StartTimer(TimeSpan.FromSeconds(3), () =>
+            //{
+            //    if (MoviesTQ.Count == 0)
+            //        return true; 
 
-                return true; 
-            });
+
+            //    _carouselIndex++;
+            //    if (_carouselIndex >= MoviesTQ.Count)
+            //        _carouselIndex = 0;
+
+
+            //    carousel.ScrollTo(_carouselIndex, animate: false);
+
+            //    return true; 
+            //});
 
 
             if (MoviesHQ.Count == 0)
@@ -176,26 +182,30 @@ namespace AppPhimLo
         {
             if (MoviesTQ.Count == 0) return;
 
-            // Trừ index
             _carouselIndex--;
             if (_carouselIndex < 0)
                 _carouselIndex = MoviesTQ.Count - 1;
 
-            // Chỉ update carousel 1 lần, không animation
-            carousel.ScrollTo(_carouselIndex, animate: false);
+            MainThread.BeginInvokeOnMainThread(() =>
+            {
+                var movie = MoviesTQ[_carouselIndex];
+                carousel.ScrollTo(movie, position: ScrollToPosition.Center, animate: false);
+            });
         }
 
         private void OnRightTapped(object sender, EventArgs e)
         {
             if (MoviesTQ.Count == 0) return;
 
-            // Cộng index
             _carouselIndex++;
             if (_carouselIndex >= MoviesTQ.Count)
                 _carouselIndex = 0;
 
-            // Chỉ update carousel 1 lần, không animation
-            carousel.ScrollTo(_carouselIndex, animate: false);
+            MainThread.BeginInvokeOnMainThread(() =>
+            {
+                var movie = MoviesTQ[_carouselIndex];
+                carousel.ScrollTo(movie, position: ScrollToPosition.Center, animate: false);
+            });
         }
 
 
