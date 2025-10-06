@@ -4,7 +4,8 @@
              xmlns:helpers="clr-namespace:AppPhimLo.Helpers"
              x:Class="AppPhimLo.Views.SearchPage"
              Title="Tìm kiếm phim"
-             BackgroundColor="#F8F9FA">
+             BackgroundColor="#F8F9FA"
+              NavigationPage.HasNavigationBar="False">
 
     <ContentPage.BindingContext>
         <viewmodels:SearchViewModel />
@@ -16,10 +17,11 @@
         <Frame Grid.Row="0"
                CornerRadius="10"
                HasShadow="False"
+               BackgroundColor="Transparent"
                Padding="0"
                HeightRequest="44">
 
-            <Grid ColumnDefinitions="*,Auto" Padding="10,0">
+            <Grid ColumnDefinitions="*,Auto">
 
                 <Entry Placeholder="Tên phim, show, diễn viên, kênh TV"
                        Text="{Binding SearchQuery}"
@@ -27,19 +29,17 @@
                        PlaceholderColor="#9E9E9E"
                        BackgroundColor="Transparent"
                        FontSize="15"
-                       ReturnType="Search">
+                       ReturnType="Search"
+                       >
                     <Entry.Behaviors>
                         <helpers:EventToCommandBehavior EventName="Completed"
                                                         Command="{Binding SearchCommand}" />
                     </Entry.Behaviors>
                 </Entry>
 
-                <ImageButton Grid.Column="1"
-                             Source="search.png"
-                             WidthRequest="40"
-                             HeightRequest="25"
-                             BackgroundColor="Transparent"
-                             Padding="0"
+                <Button Grid.Column="1"
+                       
+                             Text="Tìm kiếm"
                              Command="{Binding SearchCommand}" />
             </Grid>
 

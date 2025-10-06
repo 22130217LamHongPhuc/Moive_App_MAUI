@@ -1,16 +1,28 @@
-<Shell
+﻿<Shell
     x:Class="AppPhimLo.AppShell"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:local="clr-namespace:AppPhimLo"
-    xmlns:view="clr-namespace:AppPhimLo.Views"  
+    xmlns:views="clr-namespace:AppPhimLo.Views"  
     Shell.FlyoutBehavior="Disabled"
-    Title="AppPhimLo">
+    Title="AppPhimLo"
+    Shell.NavBarIsVisible="False">
 
 
-    <ShellContent
-        Title="Tìm kiếm"
-        ContentTemplate="{DataTemplate view:SearchPage}"
-        Route="SearchPage" />
+    <TabBar>
+        <ShellContent
+            Title="Home"
+        ContentTemplate="{DataTemplate local:MainPage}" />
+
+        <ShellContent
+            Title="Search"
+        ContentTemplate="{DataTemplate views:SearchPage}" />
+
+        <!--  <ShellContent
+        Title="Profile"
+        Icon="user.png"
+        ContentTemplate="{DataTemplate views:ProfilePage}" />
+    -->
+    </TabBar>
 
 </Shell>
