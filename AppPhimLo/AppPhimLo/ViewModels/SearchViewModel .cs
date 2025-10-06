@@ -2,6 +2,7 @@
 using System.Windows.Input;
 using AppPhimLo.Models;
 using AppPhimLo.Services;
+using AppPhimLo.Views;
 
 namespace AppPhimLo.ViewModels;
 
@@ -14,6 +15,8 @@ public class SearchViewModel : BindableObject
     private const int PageSize = 10;
 
     private readonly MovieService _movieService;
+    public ICommand OpenDetailCommand { get; }
+
 
     public string SearchQuery
     {
@@ -60,7 +63,15 @@ public class SearchViewModel : BindableObject
             if (CanGoPrevious)
                 await SearchMoviesAsync(CurrentPage - 1);
         });
-    }
+
+
+        //OpenDetailCommand = new Command<string?>(async slug =>
+        //{
+        //    if (string.IsNullOrWhiteSpace(slug)) return;
+        //    await Shell.Current.Navigation.PushAsync(new Movie_Detail(slug));
+        //});
+
+        }
 
     private async Task SearchMoviesAsync(int page)
     {
@@ -91,4 +102,22 @@ public class SearchViewModel : BindableObject
         OnPropertyChanged(nameof(CanGoPrevious));
         OnPropertyChanged(nameof(CanGoNext));
     }
+
+
+    private async Task OpenMovieAsync(string slug)
+    {
+        if (slug is null) return;
+
+        // Cách 1: Query string
+        // await Shell.Current.GoToAsync($"{nameof(MovieDetailPage)}?slug={item.Slug}");
+
+        // Cách 2: Dictionary (an toàn hơn)
+        await Shell.Current.GoToAsync(nameof(Movie_Detail), new Dictionary<string, object>
+        {
+            ["slug"] = slug
+        });
+    }
+
+
+
 }

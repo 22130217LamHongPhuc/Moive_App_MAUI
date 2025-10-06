@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging;
 
 namespace AppPhimLo
 {
@@ -18,6 +18,8 @@ namespace AppPhimLo
 
 #if DEBUG
     		builder.Logging.AddDebug();
+
+
 #endif
 
             return builder.Build();
