@@ -10,24 +10,24 @@
 
     <!-- Trang Movie_Detail đặt đầu tiên -->
 
-    <ShellContent
-        ContentTemplate="{DataTemplate view:LoginPage}"
-        Route="LoginPage" />
 
     <TabBar>
         <ShellContent
-            Title="Home"
+        Title="Home"
         ContentTemplate="{DataTemplate local:MainPage}" />
+       <ShellContent
+            Title="Login"
+        ContentTemplate="{DataTemplate view:LoginPage}" />
 
         <ShellContent
             Title="Search"
-        ContentTemplate="{DataTemplate views:SearchPage}" />
+        ContentTemplate="{DataTemplate view:SearchPage}" />
 
-        <!--  <ShellContent
+         <ShellContent
         Title="Profile"
         Icon="user.png"
-        ContentTemplate="{DataTemplate views:ProfilePage}" />
-    -->
+        ContentTemplate="{DataTemplate view:ProfilePage}" />
+
     </TabBar>
 
     <ShellContent
