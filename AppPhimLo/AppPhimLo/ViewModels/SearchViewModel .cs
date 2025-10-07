@@ -83,7 +83,6 @@ public class SearchViewModel : BindableObject
         }
     }
 
-    // Thêm vào trong SearchViewModel của bạn
 
     // Phương thức để tìm kiếm phim dựa trên slug của thể loại
     private async Task PerformGenreSearchAsync(string genreSlug, int page)
@@ -91,24 +90,24 @@ public class SearchViewModel : BindableObject
         if (isLoading)
             return;
 
-        isLoading = true; // Bắt đầu trạng thái tải
-        CurrentPage = page; // Cập nhật trang hiện tại
+        isLoading = true; 
+        CurrentPage = page; 
 
-        Movies.Clear(); // Xóa danh sách phim cũ
+        Movies.Clear(); 
 
         try
         {
-            // Gọi API để lấy phim theo thể loại đã chọn
+            
             var (results, totalItems, totalPages) = await _genreService.GetMoviesByGenreAsync(
                 genreSlug,
                 CurrentPage,
-                limit: PageSize // Sử dụng PageSize đã định nghĩa
+                limit: PageSize 
             );
 
             foreach (var movie in results)
                 Movies.Add(movie); // Thêm phim vào ObservableCollection
 
-            TotalPages = totalPages; // Cập nhật tổng số trang
+            TotalPages = totalPages; 
 
             OnPropertyChanged(nameof(Movies));
             OnPropertyChanged(nameof(HasMovies));
@@ -158,13 +157,12 @@ public class SearchViewModel : BindableObject
 
     }
 
-    // Sửa đổi phương thức OnGenreSelected hiện có trong SearchViewModel
 
     private async Task OnGenreSelected(Genre selectedGenre)
     {
         if (selectedGenre == null) return;
 
-        SelectedGenre = selectedGenre; // Lưu thể loại đã chọn
+        SelectedGenre = selectedGenre; 
 
         await PerformGenreSearchAsync(selectedGenre.Slug, 1);
     }
