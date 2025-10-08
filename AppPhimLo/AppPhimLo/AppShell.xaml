@@ -10,15 +10,15 @@
 
     <!-- Trang Movie_Detail đặt đầu tiên -->
 
+    <ShellContent
+      Title="Login"
+  ContentTemplate="{DataTemplate view:LoginPage}" />
 
     <TabBar>
         <ShellContent
         Title="Home"
         ContentTemplate="{DataTemplate local:MainPage}" />
-       <ShellContent
-            Title="Login"
-        ContentTemplate="{DataTemplate view:LoginPage}" />
-
+      
         <ShellContent
             Title="Search"
         ContentTemplate="{DataTemplate view:SearchPage}" />

@@ -1,297 +1,278 @@
-﻿using AppPhimLo.Models;
-using AppPhimLo.Services;
-
+﻿using System;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.Linq;
+using System.Threading.Tasks;
 using System.Windows.Input;
 using Microsoft.Maui.Controls;
 
+using AppPhimLo.Models;
+using AppPhimLo.Services;
 using AppPhimLo.Views;
 
-
-namespace AppPhimLo.ViewModels;
-
-public class SearchViewModel : BindableObject
+namespace AppPhimLo.ViewModels
 {
-    private string searchQuery;
-    private int currentPage = 1;
-    private int totalPages = 1;
-    private bool isLoading = false;
-    private const int PageSize = 10;
-
-
-    private readonly MovieService _movieService;
-    private readonly GenreService _genreService;
-
-  
-    public ICommand OpenDetailCommand { get; }
-
-
-    public string SearchQuery
+    public class SearchViewModel : BindableObject
     {
-        get => searchQuery;
-        set { searchQuery = value; OnPropertyChanged(); }
-    }
+        private const int PageSize = 10;
 
-    public int CurrentPage
-    {
-        get => currentPage;
-        set { currentPage = value; OnPropertyChanged(); UpdatePaginationProperties(); }
-    }
+        private string _searchQuery;
+        private int _currentPage = 1;
+        private int _totalPages = 1;
+        private bool _isLoading = false;   // chặn double trigger
+        private bool _isBusy = false;      // trạng thái UI
 
-    public int TotalPages
-    {
-        get => totalPages;
-        set { totalPages = value; OnPropertyChanged(); UpdatePaginationProperties(); }
-    }
+        private readonly MovieService _movieService;
+        private readonly GenreService _genreService;
 
-    public ObservableCollection<Movie> Movies { get; set; } = new();
-
-    public bool HasMovies => Movies.Count > 0;
-    public bool CanGoPrevious => CurrentPage > 1;
-    public bool CanGoNext => CurrentPage < TotalPages;
-
-    public ICommand SearchCommand { get; }
-    public ICommand NextPageCommand { get; }
-    public ICommand PreviousPageCommand { get; }
-
-    public ICommand ShowGenresCommand { get; }
-    public ICommand LoadGenresCommand { get; }
-
-    private bool _isBusy;
-    public bool IsBusy
-    {
-        get => _isBusy;
-        private set
+        public SearchViewModel()
         {
-            if (_isBusy != value)
+            _movieService = new MovieService();
+            _genreService = new GenreService();
+
+            SearchCommand = new Command(async () => await SearchMoviesAsync(1), () => !IsBusy);
+            NextPageCommand = new Command(async () =>
             {
-                _isBusy = value;
-                OnPropertyChanged();
-                ((Command)ShowGenresCommand).ChangeCanExecute();
-            }
+                if (CanGoNext) await SearchMoviesAsync(CurrentPage + 1);
+            }, () => !IsBusy && CanGoNext);
+
+            PreviousPageCommand = new Command(async () =>
+            {
+                if (CanGoPrevious) await SearchMoviesAsync(CurrentPage - 1);
+            }, () => !IsBusy && CanGoPrevious);
+
+            ShowGenresCommand = new Command(async () => await ShowGenresActionSheetAsync(), () => !IsBusy);
+            LoadGenresCommand = new Command(async () => await LoadGenresAsync(), () => !IsBusy);
+            SelectGenreCommand = new Command<Genre>(async g => await OnGenreSelected(g));
+            OpenDetailCommand = new Command<string?>(async slug => await OpenMovieAsync(slug));
+
+            // tải genres lần đầu
+            _ = LoadGenresAsync();
         }
-    }
 
-    public ObservableCollection<Genre> Genres { get; set; } = new();
+        #region Properties
 
-    private Genre selectedGenre;
-    public Genre SelectedGenre
-    {
-        get => selectedGenre;
-        set
+        public string SearchQuery
         {
-            if (selectedGenre != value)
+            get => _searchQuery;
+            set { _searchQuery = value; OnPropertyChanged(); }
+        }
+
+        public int CurrentPage
+        {
+            get => _currentPage;
+            set { _currentPage = value; OnPropertyChanged(); UpdatePaginationProperties(); }
+        }
+
+        public int TotalPages
+        {
+            get => _totalPages;
+            set { _totalPages = value; OnPropertyChanged(); UpdatePaginationProperties(); }
+        }
+
+        public ObservableCollection<Movie> Movies { get; } = new();
+        public bool HasMovies => Movies.Count > 0;
+        public bool CanGoPrevious => CurrentPage > 1;
+        public bool CanGoNext => CurrentPage < TotalPages;
+
+        public ObservableCollection<Genre> Genres { get; } = new();
+
+        private Genre _selectedGenre;
+        public Genre SelectedGenre
+        {
+            get => _selectedGenre;
+            set
             {
-                selectedGenre = value;
-                OnPropertyChanged();
-                if (value != null)
+                if (_selectedGenre != value)
                 {
-                    _ = PerformGenreSearchAsync(value.Slug, 1);
+                    _selectedGenre = value;
+                    OnPropertyChanged();
+                    if (value != null)
+                    {
+                        _ = PerformGenreSearchAsync(value.Slug, 1);
+                    }
                 }
             }
         }
-    }
 
-
-    // Phương thức để tìm kiếm phim dựa trên slug của thể loại
-    private async Task PerformGenreSearchAsync(string genreSlug, int page)
-    {
-        if (isLoading)
-            return;
-
-        isLoading = true; 
-        CurrentPage = page; 
-
-        Movies.Clear(); 
-
-        try
+        public bool IsBusy
         {
-            
-            var (results, totalItems, totalPages) = await _genreService.GetMoviesByGenreAsync(
-                genreSlug,
-                CurrentPage,
-                limit: PageSize 
-            );
-
-            foreach (var movie in results)
-                Movies.Add(movie); // Thêm phim vào ObservableCollection
-
-            TotalPages = totalPages; 
-
-            OnPropertyChanged(nameof(Movies));
-            OnPropertyChanged(nameof(HasMovies));
-            UpdatePaginationProperties(); 
-        }
-        catch (Exception ex)
-        {
-            Debug.WriteLine($"Error searching movies by genre: {ex.Message}");
-            await Application.Current.MainPage.DisplayAlert("Lỗi", "Không thể tải phim theo thể loại này. Vui lòng thử lại sau.", "OK");
-        }
-        finally
-        {
-            isLoading = false; 
-        }
-    }
-
-    public ICommand SelectGenreCommand { get; }
-
-
-    public SearchViewModel()
-    {
-        _movieService = new MovieService();
-
-        SearchCommand = new Command(async () => await SearchMoviesAsync(1));
-
-        NextPageCommand = new Command(async () =>
-        {
-            if (CanGoNext)
-                await SearchMoviesAsync(CurrentPage + 1);
-        });
-
-        PreviousPageCommand = new Command(async () =>
-        {
-            if (CanGoPrevious)
-                await SearchMoviesAsync(CurrentPage - 1);
-
-        });
-
-        // Tai
-        _genreService = new GenreService();
-        ShowGenresCommand = new Command(async () => await ShowGenresActionSheetAsync(), () => !IsBusy);
-        LoadGenresCommand = new Command(async () => await LoadGenresAsync(), () => !IsBusy);
-
-        Genres = new ObservableCollection<Genre>();
-        _ = LoadGenresAsync();
-        SelectGenreCommand = new Command<Genre>(async (genre) => await OnGenreSelected(genre));
-
-
-    }
-
-
-    private async Task OnGenreSelected(Genre selectedGenre)
-    {
-        if (selectedGenre == null) return;
-
-        SelectedGenre = selectedGenre; 
-
-        await PerformGenreSearchAsync(selectedGenre.Slug, 1);
-    }
-
-
-    private async Task LoadGenresAsync()
-    {
-        if (IsBusy) return;
-        IsBusy = true;
-
-        try
-        {
-            var genreList = await _genreService.GetGenresAsync();
-            Genres.Clear(); 
-            foreach (var genre in genreList)
+            get => _isBusy;
+            private set
             {
-                    Genres.Add(genre);
+                if (_isBusy != value)
+                {
+                    _isBusy = value;
+                    OnPropertyChanged();
+                    (SearchCommand as Command)?.ChangeCanExecute();
+                    (NextPageCommand as Command)?.ChangeCanExecute();
+                    (PreviousPageCommand as Command)?.ChangeCanExecute();
+                    (ShowGenresCommand as Command)?.ChangeCanExecute();
+                    (LoadGenresCommand as Command)?.ChangeCanExecute();
+                }
             }
         }
-        catch (Exception ex)
-        {
-            Debug.WriteLine($"Error loading genres: {ex.Message}");
-            await Application.Current.MainPage.DisplayAlert("Lỗi", "Không thể tải danh sách thể loại.", "OK");
-        }
-        finally
-        {
-            IsBusy = false; 
-        }
-    }
 
-    private async Task ShowGenresActionSheetAsync()
-    {
-        if (IsBusy) return;
+        #endregion
 
-        if (!Genres.Any())
+        #region Commands
+
+        public ICommand SearchCommand { get; }
+        public ICommand NextPageCommand { get; }
+        public ICommand PreviousPageCommand { get; }
+        public ICommand ShowGenresCommand { get; }
+        public ICommand LoadGenresCommand { get; }
+        public ICommand SelectGenreCommand { get; }
+        public ICommand OpenDetailCommand { get; }
+
+        #endregion
+
+        #region Methods
+
+        private async Task SearchMoviesAsync(int page)
         {
-            await LoadGenresAsync();
+            if (string.IsNullOrWhiteSpace(SearchQuery) || _isLoading) return;
+
+            _isLoading = true;
+            IsBusy = true;
+            try
+            {
+                CurrentPage = page;
+                Movies.Clear();
+
+                var (results, _, totalPages) =
+                    await _movieService.SearchMoviesAsync(SearchQuery, CurrentPage, PageSize);
+
+                foreach (var movie in results)
+                    Movies.Add(movie);
+
+                TotalPages = totalPages;
+                OnPropertyChanged(nameof(HasMovies));
+                UpdatePaginationProperties();
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"[SearchMoviesAsync] {ex}");
+                await Application.Current.MainPage.DisplayAlert("Lỗi", "Không thể tải danh sách phim.", "OK");
+            }
+            finally
+            {
+                _isLoading = false;
+                IsBusy = false;
+            }
+        }
+
+        private async Task PerformGenreSearchAsync(string genreSlug, int page)
+        {
+            if (_isLoading) return;
+
+            _isLoading = true;
+            IsBusy = true;
+            try
+            {
+                CurrentPage = page;
+                Movies.Clear();
+
+                var (results, _, totalPages) =
+                    await _genreService.GetMoviesByGenreAsync(genreSlug, CurrentPage, limit: PageSize);
+
+                foreach (var movie in results)
+                    Movies.Add(movie);
+
+                TotalPages = totalPages;
+                OnPropertyChanged(nameof(HasMovies));
+                UpdatePaginationProperties();
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"[PerformGenreSearchAsync] {ex}");
+                await Application.Current.MainPage.DisplayAlert("Lỗi", "Không thể tải phim theo thể loại.", "OK");
+            }
+            finally
+            {
+                _isLoading = false;
+                IsBusy = false;
+            }
+        }
+
+        private async Task LoadGenresAsync()
+        {
+            if (IsBusy) return;
+            IsBusy = true;
+
+            try
+            {
+                var genreList = await _genreService.GetGenresAsync();
+                Genres.Clear();
+
+                if (genreList != null)
+                    foreach (var g in genreList)
+                        Genres.Add(g);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"[LoadGenresAsync] {ex}");
+                await Application.Current.MainPage.DisplayAlert("Lỗi", "Không thể tải danh sách thể loại.", "OK");
+            }
+            finally
+            {
+                IsBusy = false;
+            }
+        }
+
+        private async Task ShowGenresActionSheetAsync()
+        {
+            if (IsBusy) return;
+
             if (!Genres.Any())
             {
-                await Application.Current.MainPage.DisplayAlert("Thông báo", "Không có thể loại nào để chọn.", "OK");
-                return;
+                await LoadGenresAsync();
+                if (!Genres.Any())
+                {
+                    await Application.Current.MainPage.DisplayAlert("Thông báo", "Không có thể loại nào để chọn.", "OK");
+                    return;
+                }
+            }
+
+            var names = Genres.Select(g => g.Name).ToArray();
+
+            string selectedName = await Application.Current.MainPage.DisplayActionSheet(
+                "Chọn Thể loại",
+                "Hủy",
+                null,
+                names
+            );
+
+            if (!string.IsNullOrEmpty(selectedName) && selectedName != "Hủy")
+            {
+                var g = Genres.FirstOrDefault(x => x.Name == selectedName);
+                if (g != null) SelectedGenre = g;
             }
         }
 
-        string title = "Chọn Thể loại";
-        string cancelButton = "Hủy";
-
-        string[] genreButtons = Genres.Select(g => g.Name).ToArray();
-
-        string selectedGenreName = await Application.Current.MainPage.DisplayActionSheet(
-            title,
-            cancelButton,
-            null, 
-            genreButtons);
-
-        if (selectedGenreName != null && selectedGenreName != cancelButton)
+        private async Task OnGenreSelected(Genre genre)
         {
-            SelectedGenre = Genres.FirstOrDefault(g => g.Name == selectedGenreName);
-        }
-    }
-
-        });
-
-
-        //OpenDetailCommand = new Command<string?>(async slug =>
-        //{
-        //    if (string.IsNullOrWhiteSpace(slug)) return;
-        //    await Shell.Current.Navigation.PushAsync(new Movie_Detail(slug));
-        //});
-
+            if (genre == null) return;
+            SelectedGenre = genre;
+            await PerformGenreSearchAsync(genre.Slug, 1);
         }
 
-
-    private async Task SearchMoviesAsync(int page)
-    {
-        if (string.IsNullOrWhiteSpace(SearchQuery) || isLoading)
-            return;
-
-        isLoading = true;
-        CurrentPage = page;
-
-        Movies.Clear();
-
-        var (results, totalItems, totalPages) = await _movieService.SearchMoviesAsync(SearchQuery, CurrentPage, PageSize);
-
-        foreach (var movie in results)
-            Movies.Add(movie);
-
-        TotalPages = totalPages; 
-
-        OnPropertyChanged(nameof(Movies));
-        OnPropertyChanged(nameof(HasMovies));
-        UpdatePaginationProperties();
-
-        isLoading = false;
-    }
-
-    private void UpdatePaginationProperties()
-    {
-        OnPropertyChanged(nameof(CanGoPrevious));
-        OnPropertyChanged(nameof(CanGoNext));
-    }
-
-
-    private async Task OpenMovieAsync(string slug)
-    {
-        if (slug is null) return;
-
-        // Cách 1: Query string
-        // await Shell.Current.GoToAsync($"{nameof(MovieDetailPage)}?slug={item.Slug}");
-
-        // Cách 2: Dictionary (an toàn hơn)
-        await Shell.Current.GoToAsync(nameof(Movie_Detail), new Dictionary<string, object>
+        private void UpdatePaginationProperties()
         {
-            ["slug"] = slug
-        });
+            OnPropertyChanged(nameof(CanGoPrevious));
+            OnPropertyChanged(nameof(CanGoNext));
+        }
+
+        private async Task OpenMovieAsync(string? slug)
+        {
+            if (string.IsNullOrWhiteSpace(slug)) return;
+
+            await Shell.Current.GoToAsync(nameof(Movie_Detail), new Dictionary<string, object>
+            {
+                ["slug"] = slug
+            });
+        }
+
+        #endregion
     }
-
-
-
 }

@@ -20,7 +20,7 @@ public partial class ProfilePage : ContentPage
     {
         try
         {
-            string url = $"http://localhost:8080/api/user/profile?email={email}";
+            string url = $"http://152.42.244.190:8080/api/user/profile?email={email}";
             var profile = await _httpClient.GetFromJsonAsync<ProfileResponse>(url);
 
             if (profile != null)

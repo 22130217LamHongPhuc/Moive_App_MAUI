@@ -6,7 +6,6 @@ using static System.Net.WebRequestMethods;
 
 namespace AppPhimLo.Services;
 
-
 public interface IMovieApiService
 {
     Task<MovieResponse?> GetMovieAsync(string slug, CancellationToken ct = default);
@@ -19,7 +18,6 @@ public class MovieService
     {
         PropertyNamingPolicy = JsonNamingPolicy.CamelCase
     };
-
 
     public MovieService()
     {
@@ -37,7 +35,6 @@ public class MovieService
             var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
             var apiResponse = JsonSerializer.Deserialize<ApiResponse>(response, options);
 
-            // Trả về danh sách phim + totalItems + totalPages từ API
             return (
                 apiResponse?.Data?.Items ?? new List<Movie>(),
                 apiResponse?.Data?.Params?.Pagination?.TotalItems ?? 0,
@@ -68,11 +65,8 @@ public class MovieService
         return movies;
     }
 
-
-
-    public async Task<MovieResponse?> GetMovieAsync(string slug= "ngoi-truong-xac-song", CancellationToken ct = default)
+    public async Task<MovieResponse?> GetMovieAsync(string slug = "ngoi-truong-xac-song", CancellationToken ct = default)
     {
-        // slug ví dụ: "ngoi-truong-xac-song"
         var url = $"https://phimapi.com/phim/{slug}";
         var resp = await _httpClient.GetAsync(url, ct);
         resp.EnsureSuccessStatusCode();
@@ -82,12 +76,11 @@ public class MovieService
         return result;
     }
 
-
     public async Task<List<CommentItem>> GetCommentsAsync(string slug)
     {
         if (string.IsNullOrWhiteSpace(slug)) return new();
 
-        var url = $"http://localhost:8080/api/comments?slug={Uri.EscapeDataString(slug)}";
+        var url = $"http://152.42.244.190:8080/api/comments?slug={Uri.EscapeDataString(slug)}";
 
         JsonSerializerOptions _json = new JsonSerializerOptions
         {
@@ -105,13 +98,11 @@ public class MovieService
             return new();
         }
     }
+
     public async Task<bool> PostCommentAsync(CreateCommentRequest req, CancellationToken ct = default)
     {
-     
+        var url = "http://152.42.244.190:8080/api/comments";
 
-        var url = "http://localhost:8080/api/comments";
-
-        // Gửi body JSON trực tiếp
         var resp = await _httpClient.PostAsJsonAsync(url, req, _json, ct);
 
         if (!resp.IsSuccessStatusCode)
@@ -123,9 +114,10 @@ public class MovieService
 
         return true;
     }
+
     public async Task<List<FavoriteRecord>> GetFavoritesBySlugAsync(string slug)
     {
-        var url = $"http://localhost:8080/api/favorites?slug={Uri.EscapeDataString(slug)}";
+        var url = $"http://152.42.244.190:8080/api/favorites?slug={Uri.EscapeDataString(slug)}";
         try
         {
             var list = await _httpClient.GetFromJsonAsync<List<FavoriteRecord>>(url, _json);
@@ -140,18 +132,18 @@ public class MovieService
 
     public async Task<bool> AddFavoriteAsync(FavoriteRecord record)
     {
-        var resp = await _httpClient.PostAsJsonAsync("http://localhost:8080/api/favorites", record, _json);
+        var resp = await _httpClient.PostAsJsonAsync("http://152.42.244.190:8080/api/favorites", record, _json);
         return resp.IsSuccessStatusCode;
     }
 
     public async Task<bool> RemoveFavoriteAsync(int userId, string slug)
     {
-        var url = $"http://localhost:8080/api/favorites?userId={userId}&slug={Uri.EscapeDataString(slug)}";
+        var url = $"http://152.42.244.190:8080/api/favorites?userId={userId}&slug={Uri.EscapeDataString(slug)}";
         var resp = await _httpClient.DeleteAsync(url);
         return resp.IsSuccessStatusCode;
     }
 
-private class ApiResponse
+    private class ApiResponse
     {
         public ApiData Data { get; set; }
     }
@@ -173,7 +165,6 @@ private class ApiResponse
         public int TotalPages { get; set; }
     }
 
-
     private class CommentResponse
     {
         public int? UserId { get; set; }
@@ -182,7 +173,6 @@ private class ApiResponse
         public string? Content { get; set; }
         public DateTimeOffset? CreatedAt { get; set; }
     }
-
 
     private CommentItem MapToItem(CommentResponse dto)
     {
@@ -205,7 +195,6 @@ private class ApiResponse
         if (diff.TotalDays < 1) return $"{(int)diff.TotalHours} giờ trước";
         return createdAt.Value.ToLocalTime().ToString("dd/MM/yyyy HH:mm");
     }
-
 }
 
 public class CreateCommentRequest

@@ -31,7 +31,7 @@ namespace AppPhimLo.Views
             try
             {
                 // URL backend Spring Boot
-                string url = "http://localhost:8080/api/auth/login";
+                string url = "http://152.42.244.190:8080/api/auth/login";
 
                 // Tạo nội dung x-www-form-urlencoded
                 var formData = new FormUrlEncodedContent(new[]
