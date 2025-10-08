@@ -9,48 +9,72 @@
     x:DataType="vm:MovieViewModel">
 
     <ContentPage.Resources>
-        <!-- Style hiển thị lỗi: mặc định ẩn, chỉ hiện khi ErrorMessage != "" -->
+        <!-- Style hiển thị lỗi -->
         <Style x:Key="ErrorLabelStyle" TargetType="Label">
-            <Setter Property="TextColor" Value="Red"/>
-            <Setter Property="IsVisible" Value="True"/>
-
+            <Setter Property="TextColor" Value="#FF6B6B"/>
+            <!-- Đỏ tươi dễ đọc -->
+            <Setter Property="FontAttributes" Value="Bold"/>
         </Style>
+
+        <!-- Tiêu đề mục -->
+        <Style x:Key="SectionTitle" TargetType="Label">
+            <Setter Property="TextColor" Value="#FFFFFF"/>
+            <Setter Property="FontAttributes" Value="Bold"/>
+            <Setter Property="FontSize" Value="18"/>
+            <Setter Property="Margin" Value="0,8,0,0"/>
+        </Style>
+
+        <!-- Badge -->
+        <Style x:Key="BadgeLabel" TargetType="Label">
+            <Setter Property="TextColor" Value="#E5E7EB"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="Margin" Value="0,4,8,0"/>
+        </Style>
+
+        <!-- Chip -->
+        <Style x:Key="ChipBorder" TargetType="Border">
+            <Setter Property="Stroke" Value="#555"/>
+            <Setter Property="StrokeThickness" Value="1"/>
+            <Setter Property="Padding" Value="6,2"/>
+            <Setter Property="StrokeShape">
+                <Setter.Value>
+                    <RoundRectangle CornerRadius="8"/>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="Margin" Value="4,2"/>
+        </Style>
+
     </ContentPage.Resources>
 
     <ScrollView>
-
         <VerticalStackLayout Padding="16" Spacing="12" BackgroundColor="#191b24">
-            <Label x:Name="lb"/>
-         
-            <!-- Trạng thái tải -->
-            <ActivityIndicator IsRunning="{Binding IsLoading}"
-                               IsVisible="{Binding IsLoading}" />
 
-            <!-- Hiển thị lỗi (nếu có) -->
-            <Label Text="{Binding ErrorMessage}" Style="{StaticResource ErrorLabelStyle}" />
+            <ActivityIndicator IsRunning="{Binding IsLoading}"
+                               IsVisible="{Binding IsLoading}" 
+                               Color="White"/>
+
+            <Label Text="{Binding ErrorMessage}" 
+                   Style="{StaticResource ErrorLabelStyle}" />
 
             <VerticalStackLayout IsVisible="{Binding HasData}" Spacing="14">
 
-                <!-- Poster lớn + overlay mờ + tiêu đề -->
+                <!-- Poster -->
                 <Grid>
                     <Frame HasShadow="False" Padding="0" CornerRadius="16" Margin="0,4,0,0">
                         <Grid>
-                            <Image Source="{Binding Movie.PosterUrl}"
-                       Aspect="AspectFill" HeightRequest="280"/>
-                            <!-- overlay -->
+                            <Image Source="{Binding Movie.PosterUrl}" Aspect="AspectFill" HeightRequest="280"/>
                             <BoxView BackgroundColor="#66000000" />
-                            <!-- tiêu đề trên poster -->
                             <VerticalStackLayout Padding="16" VerticalOptions="End" Spacing="6">
                                 <Label Text="{Binding Movie.Name}" 
-                           FontAttributes="Bold" FontSize="22" TextColor="White"/>
+                                       FontAttributes="Bold" FontSize="22" TextColor="White"/>
                                 <Label Text="{Binding Movie.OriginName}" 
-                           FontSize="13" TextColor="#F3F4F6"/>
+                                       FontSize="13" TextColor="#D1D5DB"/>
                             </VerticalStackLayout>
                         </Grid>
                     </Frame>
                 </Grid>
 
-                <!-- Badge thông tin nhanh -->
+                <!-- Badge -->
                 <FlexLayout Direction="Row" Wrap="Wrap" AlignItems="Center" JustifyContent="Start">
                     <Label Style="{StaticResource BadgeLabel}" Text="{Binding Movie.Year, StringFormat='Năm: {0}'}"/>
                     <Label Style="{StaticResource BadgeLabel}" Text="{Binding Movie.Quality, StringFormat='Chất lượng: {0}'}"/>
@@ -60,72 +84,71 @@
                     <Label Style="{StaticResource BadgeLabel}" Text="{Binding Movie.EpisodeTotal, StringFormat='Tổng tập: {0}'}"/>
                 </FlexLayout>
 
-                <!-- Nút Trailer (nếu có) -->
-                <Button Text="Xem Trailer"
-            IsVisible="{Binding Movie.TrailerUrl}"
-            Command="{Binding OpenTrailerCommand}"
-            CommandParameter="{Binding Movie.TrailerUrl}"
-            CornerRadius="10"
-            HeightRequest="44"
-            BackgroundColor="#2563EB"
-            TextColor="White"/>
+                <!-- Trailer -->
+                <Button Text="🎬 Xem Trailer"
+                        IsVisible="{Binding Movie.TrailerUrl}"
+                        Command="{Binding OpenTrailerCommand}"
+                        CommandParameter="{Binding Movie.TrailerUrl}"
+                        CornerRadius="10"
+                        HeightRequest="44"
+                        BackgroundColor="#2563EB"
+                        TextColor="White"/>
 
                 <!-- Mô tả -->
                 <Label Style="{StaticResource SectionTitle}" Text="Tóm tắt nội dung"/>
                 <Label Text="{Binding Movie.Content}"
-           FontSize="14" TextColor="#374151"
-           LineBreakMode="TailTruncation"
-           MaxLines="6"/>
+                       FontSize="14"
+                       TextColor="#E5E7EB"
+                       LineBreakMode="WordWrap"
+                       MaxLines="6"/>
 
-                <!-- Danh mục -->
+                <!-- Thể loại -->
                 <Label Style="{StaticResource SectionTitle}" Text="Thể loại"/>
                 <FlexLayout BindableLayout.ItemsSource="{Binding Movie.Categories}"
-                Direction="Row" Wrap="Wrap" AlignItems="Center" JustifyContent="Start"
-                BindableLayout.ItemTemplate="{StaticResource NameChipTemplate}"/>
+                            Direction="Row" Wrap="Wrap" AlignItems="Center" JustifyContent="Start"
+                            BindableLayout.ItemTemplate="{StaticResource NameChipTemplate}"/>
 
                 <!-- Quốc gia -->
                 <Label Style="{StaticResource SectionTitle}" Text="Quốc gia"/>
                 <FlexLayout BindableLayout.ItemsSource="{Binding Movie.Countries}"
-                Direction="Row" Wrap="Wrap" AlignItems="Center" JustifyContent="Start"
-                BindableLayout.ItemTemplate="{StaticResource NameChipTemplate}"/>
+                            Direction="Row" Wrap="Wrap" AlignItems="Center" JustifyContent="Start"
+                            BindableLayout.ItemTemplate="{StaticResource NameChipTemplate}"/>
 
+                <!-- Diễn viên -->
                 <Label Style="{StaticResource SectionTitle}" Text="Diễn viên"/>
                 <FlexLayout BindableLayout.ItemsSource="{Binding Movie.Actors}"
-           Direction="Row" Wrap="Wrap" AlignItems="Center" JustifyContent="Start"
-           BindableLayout.ItemTemplate="{StaticResource TextChipTemplate}"/>
+                            Direction="Row" Wrap="Wrap" AlignItems="Center" JustifyContent="Start"
+                            BindableLayout.ItemTemplate="{StaticResource TextChipTemplate}"/>
 
                 <!-- Đạo diễn -->
                 <Label Style="{StaticResource SectionTitle}" Text="Đạo diễn"/>
                 <FlexLayout BindableLayout.ItemsSource="{Binding Movie.Directors}"
-           Direction="Row" Wrap="Wrap" AlignItems="Center" JustifyContent="Start"
-           BindableLayout.ItemTemplate="{StaticResource TextChipTemplate}"/>
+                            Direction="Row" Wrap="Wrap" AlignItems="Center" JustifyContent="Start"
+                            BindableLayout.ItemTemplate="{StaticResource TextChipTemplate}"/>
 
-                <!-- EPISODES (tận dụng cấu trúc bạn đã có) -->
+                <!-- Danh sách tập -->
                 <Label Style="{StaticResource SectionTitle}" Text="Danh sách tập"/>
                 <CollectionView ItemsSource="{Binding Episodes}">
                     <CollectionView.ItemTemplate>
-                        <!-- mỗi item: EpisodeServer -->
                         <DataTemplate x:DataType="models:EpisodeServer">
-                            <Frame Padding="12" Margin="0,6" CornerRadius="14" HasShadow="True">
+                            <Frame Padding="12" Margin="0,6" CornerRadius="14" HasShadow="True" BackgroundColor="#1F2937">
                                 <VerticalStackLayout Spacing="8">
-                                    <Label Text="{Binding ServerName}" FontAttributes="Bold" FontSize="16" />
+                                    <Label Text="{Binding ServerName}" 
+                                           FontAttributes="Bold" FontSize="16" 
+                                           TextColor="White"/>
                                     <FlexLayout BindableLayout.ItemsSource="{Binding ServerData}"
-                                    Direction="Row" Wrap="Wrap" AlignItems="Center" JustifyContent="Start">
+                                                Direction="Row" Wrap="Wrap" AlignItems="Center" JustifyContent="Start">
                                         <BindableLayout.ItemTemplate>
-                                            <!-- mỗi item: EpisodeData -->
                                             <DataTemplate x:DataType="models:EpisodeData">
-                                                <Border Style="{StaticResource ChipBorder}"
-                                                        BackgroundColor="Transparent"  
-                                                    StrokeThickness="1">
+                                                <Border Style="{StaticResource ChipBorder}">
                                                     <Border.GestureRecognizers>
                                                         <TapGestureRecognizer
-                Command="{Binding Source={x:Reference Page}, Path=BindingContext.OpenEpisodeCommand}"
-                CommandParameter="{Binding .}" />
+                                                            Command="{Binding Source={x:Reference Page}, Path=BindingContext.OpenEpisodeCommand}"
+                                                            CommandParameter="{Binding .}" />
                                                     </Border.GestureRecognizers>
-                                                    <Label Text="{Binding Name}" FontSize="13" />
+                                                    <Label Text="{Binding Name}" FontSize="13" TextColor="#E5E7EB"/>
                                                 </Border>
                                             </DataTemplate>
-
                                         </BindableLayout.ItemTemplate>
                                     </FlexLayout>
                                 </VerticalStackLayout>
@@ -135,7 +158,6 @@
                 </CollectionView>
 
             </VerticalStackLayout>
-
         </VerticalStackLayout>
     </ScrollView>
 </ContentPage>

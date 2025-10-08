@@ -8,12 +8,13 @@
     x:Name="Page"
     Title="Xem phim">
 
-    <Grid RowDefinitions="Auto,Auto,Auto,*" Padding="12">
+    <Grid RowDefinitions="Auto,Auto,Auto,*" Padding="12" BackgroundColor="Black">
+        
 
         <!-- 1) Tiêu đề -->
         <VerticalStackLayout Spacing="4">
             <Label Text="{Binding EpisodeTitle}" FontSize="20" FontAttributes="Bold"/>
-            <Label Text="Chúc bạn xem vui vẻ!" FontSize="13" TextColor="#6B7280"/>
+            <Label Text="Chúc bạn xem vui vẻ!" FontSize="13" TextColor="WhiteSmoke"/>
         </VerticalStackLayout>
 
         <!-- 2) Player -->
@@ -41,7 +42,7 @@
                        Margin="8,0,0,0"
                        VerticalTextAlignment="Center"
                        FontAttributes="Bold"
-                       TextColor="Black" />
+                       TextColor="White" />
             </HorizontalStackLayout>
 
             <Button Grid.Column="1"
@@ -76,14 +77,14 @@
                             VerticalOptions="FillAndExpand">
                 <CollectionView.EmptyView>
                     <Label Text="Hãy là người bình luận đầu tiên!"
-                           FontSize="13" TextColor="#6B7280" />
+                           FontSize="13" TextColor="White" />
                 </CollectionView.EmptyView>
                 <CollectionView.ItemTemplate>
                     <DataTemplate x:DataType="vm:CommentItem">
                         <VerticalStackLayout Padding="4,8" Spacing="2">
                             <HorizontalStackLayout Spacing="8">
                                 <Label Text="{Binding DisplayName}" FontAttributes="Bold"/>
-                                <Label Text="{Binding TimeAgo}" FontSize="13" TextColor="#6B7280"/>
+                                <Label Text="{Binding TimeAgo}" FontSize="13" TextColor="White"/>
                             </HorizontalStackLayout>
                             <Label Text="{Binding Content}" />
                         </VerticalStackLayout>

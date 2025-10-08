@@ -50,7 +50,7 @@ namespace AppPhimLo.Views
                 {
                     await DisplayAlert("Thông báo", result, "OK");
 
-                    await Navigation.PushAsync(new ProfilePage(email));
+                    await Navigation.PushAsync(new MainPage());
                 }
                 else
                 {
