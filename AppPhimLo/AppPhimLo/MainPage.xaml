@@ -29,7 +29,7 @@
                             <LinearItemsLayout Orientation="Horizontal" ItemSpacing="10"/>
                         </CarouselView.ItemsLayout>
                         <CarouselView.ItemTemplate>
-                            <DataTemplate>
+                            <DataTemplate >
                                 <Grid>
                                     <!-- Ảnh nền -->
                                     <Image Source="{Binding FullThumbUrl}"
@@ -116,7 +116,12 @@
                                  Padding="10"
                                  HasShadow="False"
                                  BackgroundColor="{Binding Color}">
-                            <StackLayout VerticalOptions="Center" HorizontalOptions="Center" Spacing="5">
+                                <Frame.GestureRecognizers>
+                                    <TapGestureRecognizer Tapped="Move">
+
+                                    </TapGestureRecognizer>
+                                </Frame.GestureRecognizers>
+                                <StackLayout VerticalOptions="Center" HorizontalOptions="Center" Spacing="5">
                                 <Label Text="{Binding Name}"
                                       FontAttributes="Bold"
                                       FontSize="25"
@@ -177,8 +182,14 @@
                               Padding="0"
                               Margin="5"
                               HasShadow="True"
-                              BackgroundColor="#222">
-                            <Grid RowDefinitions="180,Auto">
+                              BackgroundColor="#222"
+                               ClassId="{Binding slug}">
+                                <Frame.GestureRecognizers>
+                                    <TapGestureRecognizer Tapped="Move">
+
+                                    </TapGestureRecognizer>
+                                </Frame.GestureRecognizers>
+                                <Grid RowDefinitions="180,Auto">
                                 <Image Source="{Binding FullThumbUrl}"
                                  Aspect="AspectFill"
                                  HorizontalOptions="Fill"
@@ -272,8 +283,14 @@
                               Padding="0"
                               Margin="5"
                               HasShadow="True"
-                              BackgroundColor="#222">
-                            <Grid RowDefinitions="180,Auto">
+                              BackgroundColor="#222"
+                               ClassId="{Binding slug}">
+                                <Frame.GestureRecognizers>
+                                    <TapGestureRecognizer Tapped="Move">
+
+                                    </TapGestureRecognizer>
+                                </Frame.GestureRecognizers>
+                                <Grid RowDefinitions="180,Auto">
                                 <Image Source="{Binding FullThumbUrl}"
                                            Aspect="AspectFill"
                                            HorizontalOptions="Fill"
@@ -368,8 +385,14 @@
                              Padding="0"
                              Margin="5"
                              HasShadow="True"
-                             BackgroundColor="#222">
-                            <Grid RowDefinitions="180,Auto">
+                             BackgroundColor="#222"
+                                ClassId="{Binding slug}">
+                                <Frame.GestureRecognizers>
+                                    <TapGestureRecognizer Tapped="Move">
+
+                                    </TapGestureRecognizer>
+                                </Frame.GestureRecognizers>
+                                <Grid RowDefinitions="180,Auto">
                                 <Image Source="{Binding FullThumbUrl}"
                                  Aspect="AspectFill"
                                  HorizontalOptions="Fill"
@@ -460,28 +483,41 @@
                     </CollectionView.ItemsLayout>
                     <CollectionView.ItemTemplate>
                         <DataTemplate>
-                            <Grid Padding="5">
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="Auto"/>
-                                    <RowDefinition Height="Auto"/>
-                                </Grid.RowDefinitions>
+                                <Frame Padding="0"
+                                     Margin="0"
+                                     HasShadow="False"
+                                     BackgroundColor="Transparent"
+                                        BorderColor="Transparent"
+                                       CornerRadius="0"
+                                     ClassId="{Binding slug}"
+                                     >
+                                    <Frame.GestureRecognizers>
+                                        <TapGestureRecognizer Tapped="Move">
 
-                                <!-- Poster -->
-                                <Border StrokeShape="RoundRectangle 10"
+                                        </TapGestureRecognizer>
+                                    </Frame.GestureRecognizers>
+                                    <Grid Padding="5">
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                        </Grid.RowDefinitions>
+
+                                        <!-- Poster -->
+                                        <Border StrokeShape="RoundRectangle 10"
                                         StrokeThickness="0"
                                         HeightRequest="220"
                                         WidthRequest="150"
                                         BackgroundColor="Transparent">
-                                    <Image Source="{Binding thumb_url}"
+                                            <Image Source="{Binding thumb_url}"
                                            Aspect="AspectFill"
                                            HeightRequest="220"
                                            WidthRequest="150"
                                            VerticalOptions="Center"
                                            HorizontalOptions="Center"/>
-                                </Border>
+                                        </Border>
 
-                                <!-- Movie Name -->
-                                <Label Grid.Row="1"
+                                        <!-- Movie Name -->
+                                        <Label Grid.Row="1"
                                        Text="{Binding name}"
                                        FontSize="14"
                                        TextColor="#fff"
@@ -492,25 +528,26 @@
                                        
                                        Margin="0,5,0,0"/>
 
-                                <!-- Hover Effect -->
-                                <VisualStateManager.VisualStateGroups>
-                                    <VisualStateGroup>
-                                        <VisualState Name="Normal">
-                                            <VisualState.Setters>
-                                                <Setter Property="TranslationY" Value="0"/>
-                                                <Setter Property="Scale" Value="1"/>
-                                            </VisualState.Setters>
-                                        </VisualState>
-                                        <VisualState Name="PointerOver">
-                                            <VisualState.Setters>
-                                                <Setter Property="TranslationY" Value="-8"/>
-                                                <Setter Property="Scale" Value="1.05"/>
-                                            </VisualState.Setters>
-                                        </VisualState>
-                                    </VisualStateGroup>
-                                </VisualStateManager.VisualStateGroups>
-                            </Grid>
-                        </DataTemplate>
+                                        <!-- Hover Effect -->
+                                        <VisualStateManager.VisualStateGroups>
+                                            <VisualStateGroup>
+                                                <VisualState Name="Normal">
+                                                    <VisualState.Setters>
+                                                        <Setter Property="TranslationY" Value="0"/>
+                                                        <Setter Property="Scale" Value="1"/>
+                                                    </VisualState.Setters>
+                                                </VisualState>
+                                                <VisualState Name="PointerOver">
+                                                    <VisualState.Setters>
+                                                        <Setter Property="TranslationY" Value="-8"/>
+                                                        <Setter Property="Scale" Value="1.05"/>
+                                                    </VisualState.Setters>
+                                                </VisualState>
+                                            </VisualStateGroup>
+                                        </VisualStateManager.VisualStateGroups>
+                                    </Grid>
+                                </Frame>
+                            </DataTemplate>
                     </CollectionView.ItemTemplate>
                 </CollectionView>
 
