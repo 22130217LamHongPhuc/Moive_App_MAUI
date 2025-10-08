@@ -9,10 +9,11 @@ public partial class ProfilePage : ContentPage
     private readonly HttpClient _httpClient;
 
     // Truyền email từ trang LoginPage khi đăng nhập thành công
-    public ProfilePage(string email)
+    public ProfilePage()
     {
         InitializeComponent();
         _httpClient = new HttpClient();
+        string email = Preferences.Get("UserEmail", null);
         LoadProfile(email);
     }
 
@@ -20,6 +21,7 @@ public partial class ProfilePage : ContentPage
     {
         try
         {
+
             string url = $"http://152.42.244.190:8080/api/user/profile?email={email}";
             var profile = await _httpClient.GetFromJsonAsync<ProfileResponse>(url);
 
@@ -47,7 +49,8 @@ public partial class ProfilePage : ContentPage
 
     private async void OnProfileButtonClicked(object sender, EventArgs e)
     {
-        await Shell.Current.GoToAsync($"{nameof(SearchPage)}");
+        //Application.Current.MainPage = new AppShell();
+        await Shell.Current.GoToAsync($"{nameof(MainPage)}");
     }
 }
 

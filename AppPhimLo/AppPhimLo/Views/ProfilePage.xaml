@@ -13,7 +13,7 @@
                    HorizontalOptions="Center"
                    HasShadow="True"
                    Padding="0">
-                <Image Source="user.png"
+                <Image Source="anh1.png"
                        Aspect="AspectFill"
                        HeightRequest="100"
                        WidthRequest="100"/>

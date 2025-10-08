@@ -1,0 +1,54 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "D:\\mauiappphim\\Moive_App_MAUI\\AppPhimLo\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{346B471C-87F3-4D3A-A8E2-446FD6235C2A}|AppPhimLo\\AppPhimLo.csproj|d:\\mauiappphim\\moive_app_maui\\appphimlo\\appphimlo\\views\\profilepage.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
+      "RelativeMoniker": "D:0:0:{346B471C-87F3-4D3A-A8E2-446FD6235C2A}|AppPhimLo\\AppPhimLo.csproj|solutionrelative:appphimlo\\views\\profilepage.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{346B471C-87F3-4D3A-A8E2-446FD6235C2A}|AppPhimLo\\AppPhimLo.csproj|d:\\mauiappphim\\moive_app_maui\\appphimlo\\appphimlo\\mainpage.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
+      "RelativeMoniker": "D:0:0:{346B471C-87F3-4D3A-A8E2-446FD6235C2A}|AppPhimLo\\AppPhimLo.csproj|solutionrelative:appphimlo\\mainpage.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 1,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "MainPage.xaml",
+              "DocumentMoniker": "D:\\mauiappphim\\Moive_App_MAUI\\AppPhimLo\\AppPhimLo\\MainPage.xaml",
+              "RelativeDocumentMoniker": "AppPhimLo\\MainPage.xaml",
+              "ToolTip": "D:\\mauiappphim\\Moive_App_MAUI\\AppPhimLo\\AppPhimLo\\MainPage.xaml",
+              "RelativeToolTip": "AppPhimLo\\MainPage.xaml",
+              "ViewState": "AgIAAFgCAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
+              "WhenOpened": "2025-10-08T11:45:25.665Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "ProfilePage.xaml",
+              "DocumentMoniker": "D:\\mauiappphim\\Moive_App_MAUI\\AppPhimLo\\AppPhimLo\\Views\\ProfilePage.xaml",
+              "RelativeDocumentMoniker": "AppPhimLo\\Views\\ProfilePage.xaml",
+              "ToolTip": "D:\\mauiappphim\\Moive_App_MAUI\\AppPhimLo\\AppPhimLo\\Views\\ProfilePage.xaml",
+              "RelativeToolTip": "AppPhimLo\\Views\\ProfilePage.xaml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABEAAAAqAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
+              "WhenOpened": "2025-10-08T11:43:24.447Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
