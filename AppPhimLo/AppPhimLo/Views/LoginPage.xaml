@@ -1,0 +1,107 @@
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="AppPhimLo.Views.LoginPage">
+    <Grid>
+        <!-- Dùng 3 hàng: top spacer, nội dung chính, bottom spacer -->
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <VerticalStackLayout Grid.Row="1"
+                             Spacing="20"
+                             HorizontalOptions="Center"
+                             WidthRequest="400">
+
+            <!-- Logo -->
+            <Image Source="logo.png"
+                   HeightRequest="140"
+                   HorizontalOptions="Center"
+                   Margin="0,0,0,0"/>
+
+            <!-- Tiêu đề -->
+            <Label Text="Đăng Nhập"
+                   FontSize="24"
+                   FontAttributes="Bold"
+                   HorizontalOptions="Center"
+                   TextColor="#212121"
+                   Margin="0,0,0,10"/>
+
+            <!-- Ô nhập email / username -->
+            <Frame CornerRadius="12"
+                   Padding="10"
+                   BackgroundColor="White"
+                   BorderColor="#E0E0E0"
+                   HasShadow="True">
+                <Grid ColumnDefinitions="40,*" VerticalOptions="Center">
+                    <Image Source="user.png" HeightRequest="25" WidthRequest="20" VerticalOptions="Center"/>
+                    <Entry Grid.Column="1"
+                           x:Name="UsernameEntry"
+                           Placeholder="Email"
+                           Keyboard="Email"
+                           TextColor="#212121"
+                           PlaceholderColor="#9E9E9E"
+                           FontSize="16"
+                           BackgroundColor="Transparent"/>
+                </Grid>
+            </Frame>
+
+            <!-- Ô nhập mật khẩu -->
+            <Frame CornerRadius="12"
+                   Padding="10"
+                   BackgroundColor="White"
+                   BorderColor="#E0E0E0"
+                   HasShadow="True">
+                <Grid ColumnDefinitions="40,*" VerticalOptions="Center">
+                    <Image Source="lock.png" HeightRequest="25" WidthRequest="20" VerticalOptions="Center"/>
+                    <Entry Grid.Column="1"
+                           x:Name="PasswordEntry"
+                           Placeholder="Mật khẩu"
+                           IsPassword="True"
+                           TextColor="#212121"
+                           PlaceholderColor="#9E9E9E"
+                           FontSize="16"
+                           BackgroundColor="Transparent"/>
+                </Grid>
+            </Frame>
+
+            <!-- Nút đăng nhập -->
+            <Button Text="Đăng nhập"
+                    BackgroundColor="#2196F3"
+                    TextColor="White"
+                    CornerRadius="25"
+                    HeightRequest="50"
+                    FontSize="18"
+                    FontAttributes="Bold"
+                    Clicked="OnLoginClicked"/>
+
+            <!-- Quên mật khẩu + Đăng ký -->
+            <HorizontalStackLayout HorizontalOptions="Center"
+                                   Spacing="15">
+                <Label Text="Quên mật khẩu?"
+                       TextColor="#2196F3"
+                       FontAttributes="Bold"
+                       VerticalOptions="Center">
+                    <Label.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnForgotPasswordTapped"/>
+                    </Label.GestureRecognizers>
+                </Label>
+
+                <Label Text="|"
+                       TextColor="#9E9E9E"
+                       VerticalOptions="Center"/>
+
+                <Label Text="Đăng ký"
+                       TextColor="#2196F3"
+                       FontAttributes="Bold"
+                       VerticalOptions="Center">
+                    <Label.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnRegisterTapped"/>
+                    </Label.GestureRecognizers>
+                </Label>
+            </HorizontalStackLayout>
+
+        </VerticalStackLayout>
+    </Grid>
+</ContentPage>
