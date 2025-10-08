@@ -8,27 +8,30 @@
     Title="AppPhimLo"
     Shell.NavBarIsVisible="False">
 
-    <!-- Trang Movie_Detail đặt đầu tiên -->
 
-    <ShellContent
-      Title="Login"
-  ContentTemplate="{DataTemplate view:LoginPage}" />
+   
 
     <TabBar>
         <ShellContent
         Title="Home"
-        ContentTemplate="{DataTemplate local:MainPage}" />
+        ContentTemplate="{DataTemplate local:MainPage}" 
+        Route="MainPage"/>
       
         <ShellContent
-            Title="Search"
-        ContentTemplate="{DataTemplate view:SearchPage}" />
+        Title="Search"
+        ContentTemplate="{DataTemplate view:SearchPage}" 
+        Route="SearchPage"/>
 
          <ShellContent
         Title="Profile"
         Icon="user.png"
-        ContentTemplate="{DataTemplate view:ProfilePage}" />
+        ContentTemplate="{DataTemplate view:ProfilePage}" 
+        Route="ProfilePage"/>
 
     </TabBar>
+    <ShellContent
+    Title="Login"
+ContentTemplate="{DataTemplate view:LoginPage}" />
 
     <ShellContent
         Title="Chi tiết phim"

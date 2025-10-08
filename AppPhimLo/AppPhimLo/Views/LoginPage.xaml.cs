@@ -50,7 +50,15 @@ namespace AppPhimLo.Views
                 {
                     await DisplayAlert("Thông báo", result, "OK");
 
-                    await Navigation.PushAsync(new ProfilePage(email));
+                    //await Navigation.PushAsync(new ProfilePage(email));
+                    // Lưu thông tin đăng nhập nếu cần
+                    Preferences.Set("email", email);
+
+                    // Chuyển sang AppShell (màn hình chính có TabBar)
+                    Application.Current.MainPage = new AppShell();
+
+                    // Và chuyển thẳng tới tab "Profile"
+                    await Shell.Current.GoToAsync("//ProfilePage");
                 }
                 else
                 {
