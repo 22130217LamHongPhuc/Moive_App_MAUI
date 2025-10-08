@@ -1,8 +1,13 @@
-﻿using System.Collections.ObjectModel;
-using System.Windows.Input;
-using AppPhimLo.Models;
+﻿using AppPhimLo.Models;
 using AppPhimLo.Services;
+
+using System.Collections.ObjectModel;
+using System.Diagnostics;
+using System.Windows.Input;
+using Microsoft.Maui.Controls;
+
 using AppPhimLo.Views;
+
 
 namespace AppPhimLo.ViewModels;
 
@@ -14,7 +19,11 @@ public class SearchViewModel : BindableObject
     private bool isLoading = false;
     private const int PageSize = 10;
 
+
     private readonly MovieService _movieService;
+    private readonly GenreService _genreService;
+
+  
     public ICommand OpenDetailCommand { get; }
 
 
@@ -46,6 +55,88 @@ public class SearchViewModel : BindableObject
     public ICommand NextPageCommand { get; }
     public ICommand PreviousPageCommand { get; }
 
+    public ICommand ShowGenresCommand { get; }
+    public ICommand LoadGenresCommand { get; }
+
+    private bool _isBusy;
+    public bool IsBusy
+    {
+        get => _isBusy;
+        private set
+        {
+            if (_isBusy != value)
+            {
+                _isBusy = value;
+                OnPropertyChanged();
+                ((Command)ShowGenresCommand).ChangeCanExecute();
+            }
+        }
+    }
+
+    public ObservableCollection<Genre> Genres { get; set; } = new();
+
+    private Genre selectedGenre;
+    public Genre SelectedGenre
+    {
+        get => selectedGenre;
+        set
+        {
+            if (selectedGenre != value)
+            {
+                selectedGenre = value;
+                OnPropertyChanged();
+                if (value != null)
+                {
+                    _ = PerformGenreSearchAsync(value.Slug, 1);
+                }
+            }
+        }
+    }
+
+
+    // Phương thức để tìm kiếm phim dựa trên slug của thể loại
+    private async Task PerformGenreSearchAsync(string genreSlug, int page)
+    {
+        if (isLoading)
+            return;
+
+        isLoading = true; 
+        CurrentPage = page; 
+
+        Movies.Clear(); 
+
+        try
+        {
+            
+            var (results, totalItems, totalPages) = await _genreService.GetMoviesByGenreAsync(
+                genreSlug,
+                CurrentPage,
+                limit: PageSize 
+            );
+
+            foreach (var movie in results)
+                Movies.Add(movie); // Thêm phim vào ObservableCollection
+
+            TotalPages = totalPages; 
+
+            OnPropertyChanged(nameof(Movies));
+            OnPropertyChanged(nameof(HasMovies));
+            UpdatePaginationProperties(); 
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine($"Error searching movies by genre: {ex.Message}");
+            await Application.Current.MainPage.DisplayAlert("Lỗi", "Không thể tải phim theo thể loại này. Vui lòng thử lại sau.", "OK");
+        }
+        finally
+        {
+            isLoading = false; 
+        }
+    }
+
+    public ICommand SelectGenreCommand { get; }
+
+
     public SearchViewModel()
     {
         _movieService = new MovieService();
@@ -62,6 +153,88 @@ public class SearchViewModel : BindableObject
         {
             if (CanGoPrevious)
                 await SearchMoviesAsync(CurrentPage - 1);
+
+        });
+
+        // Tai
+        _genreService = new GenreService();
+        ShowGenresCommand = new Command(async () => await ShowGenresActionSheetAsync(), () => !IsBusy);
+        LoadGenresCommand = new Command(async () => await LoadGenresAsync(), () => !IsBusy);
+
+        Genres = new ObservableCollection<Genre>();
+        _ = LoadGenresAsync();
+        SelectGenreCommand = new Command<Genre>(async (genre) => await OnGenreSelected(genre));
+
+
+    }
+
+
+    private async Task OnGenreSelected(Genre selectedGenre)
+    {
+        if (selectedGenre == null) return;
+
+        SelectedGenre = selectedGenre; 
+
+        await PerformGenreSearchAsync(selectedGenre.Slug, 1);
+    }
+
+
+    private async Task LoadGenresAsync()
+    {
+        if (IsBusy) return;
+        IsBusy = true;
+
+        try
+        {
+            var genreList = await _genreService.GetGenresAsync();
+            Genres.Clear(); 
+            foreach (var genre in genreList)
+            {
+                    Genres.Add(genre);
+            }
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine($"Error loading genres: {ex.Message}");
+            await Application.Current.MainPage.DisplayAlert("Lỗi", "Không thể tải danh sách thể loại.", "OK");
+        }
+        finally
+        {
+            IsBusy = false; 
+        }
+    }
+
+    private async Task ShowGenresActionSheetAsync()
+    {
+        if (IsBusy) return;
+
+        if (!Genres.Any())
+        {
+            await LoadGenresAsync();
+            if (!Genres.Any())
+            {
+                await Application.Current.MainPage.DisplayAlert("Thông báo", "Không có thể loại nào để chọn.", "OK");
+                return;
+            }
+        }
+
+        string title = "Chọn Thể loại";
+        string cancelButton = "Hủy";
+
+        string[] genreButtons = Genres.Select(g => g.Name).ToArray();
+
+        string selectedGenreName = await Application.Current.MainPage.DisplayActionSheet(
+            title,
+            cancelButton,
+            null, 
+            genreButtons);
+
+        if (selectedGenreName != null && selectedGenreName != cancelButton)
+        {
+            SelectedGenre = Genres.FirstOrDefault(g => g.Name == selectedGenreName);
+        }
+    }
+
         });
 
 
@@ -72,6 +245,7 @@ public class SearchViewModel : BindableObject
         //});
 
         }
+
 
     private async Task SearchMoviesAsync(int page)
     {

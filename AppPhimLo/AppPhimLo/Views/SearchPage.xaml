@@ -4,15 +4,19 @@
              xmlns:helpers="clr-namespace:AppPhimLo.Helpers"
              x:Class="AppPhimLo.Views.SearchPage"
              Title="Tìm kiếm phim"
+
+  
+
              BackgroundColor="#F8F9FA"
               NavigationPage.HasNavigationBar="False">
+
 
     <ContentPage.BindingContext>
         <viewmodels:SearchViewModel />
     </ContentPage.BindingContext>
 
     <Grid Padding="15" RowDefinitions="Auto,*,Auto">
-
+       
         <!-- Thanh tìm kiếm -->
         <Frame Grid.Row="0"
                CornerRadius="10"
@@ -41,6 +45,11 @@
 
                              Text="Tìm kiếm"
                              Command="{Binding SearchCommand}" />
+
+                <Button Text="Thể loại"
+                    Command="{Binding ShowGenresCommand}"
+                    WidthRequest="80" />
+
             </Grid>
 
         </Frame>
@@ -157,4 +166,5 @@
         </StackLayout>
 
     </Grid>
+
 </ContentPage>
